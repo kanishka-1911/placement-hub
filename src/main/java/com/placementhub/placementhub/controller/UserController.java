@@ -1,25 +1,28 @@
 package com.placementhub.placementhub.controller;
 
-import com.placementhub.placementhub.repository.UserRepository;
-import com.placementhub.placementhub.entity.User;
+import com.placementhub.placementhub.dto.UserRequest;
+import com.placementhub.placementhub.dto.UserResponse;
+import com.placementhub.placementhub.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    private final UserRepository userRepository;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping
+    public List<UserResponse> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
-    }
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public UserResponse createUser(@RequestBody UserRequest request) {
+        return userService.createUser(request);
     }
 }
 
