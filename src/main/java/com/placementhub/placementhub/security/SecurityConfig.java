@@ -1,5 +1,5 @@
 package com.placementhub.placementhub.security;
-
+import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,12 +46,19 @@ public class SecurityConfig {
             )
 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**")
-                .permitAll()
 
-                .anyRequest()
-                .authenticated()
-            )
+            	    .requestMatchers("/api/auth/**")
+            	    .permitAll()
+
+            	    .requestMatchers(
+            	            HttpMethod.GET,
+            	            "/api/users"
+            	    )
+            	    .hasRole("ADMIN")
+
+            	    .anyRequest()
+            	    .authenticated()
+            	)
 
             .addFilterBefore(
                 jwtAuthenticationFilter,

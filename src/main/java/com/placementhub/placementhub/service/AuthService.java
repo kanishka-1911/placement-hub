@@ -49,7 +49,7 @@ public class AuthService {
                 passwordEncoder.encode(request.getPassword())
         );
 
-        user.setRole(request.getRole());
+        user.setRole("STUDENT");
 
         userRepository.save(user);
     }
