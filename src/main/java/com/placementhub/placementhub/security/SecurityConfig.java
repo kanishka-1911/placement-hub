@@ -50,6 +50,28 @@ public class SecurityConfig {
             	    .requestMatchers("/api/auth/**")
             	    .permitAll()
 
+            	    .requestMatchers("/api/student/**")
+            	    .hasRole("STUDENT")
+
+            	    .requestMatchers(
+            	            HttpMethod.POST,
+            	            "/api/companies/**"
+            	    )
+            	    .hasRole("ADMIN")
+
+            	    .requestMatchers(
+            	            HttpMethod.POST,
+            	            "/api/jobs/**"
+            	    )
+            	    .hasRole("ADMIN")
+
+            	    .requestMatchers(
+            	            HttpMethod.GET,
+            	            "/api/companies/**",
+            	            "/api/jobs/**"
+            	    )
+            	    .hasAnyRole("STUDENT", "ADMIN")
+
             	    .requestMatchers(
             	            HttpMethod.GET,
             	            "/api/users"
@@ -59,7 +81,6 @@ public class SecurityConfig {
             	    .anyRequest()
             	    .authenticated()
             	)
-
             .addFilterBefore(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class
