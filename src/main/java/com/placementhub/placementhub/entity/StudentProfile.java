@@ -1,7 +1,12 @@
 package com.placementhub.placementhub.entity;
 
 import jakarta.persistence.*;
-
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.JoinColumn;
+import java.util.HashSet;
+import java.util.Set;
+import jakarta.persistence.Column;
 @Entity
 @Table(name = "student_profiles")
 public class StudentProfile {
@@ -11,22 +16,29 @@ public class StudentProfile {
     private Long id;
 
     private String fullName;
-
     @Column(unique = true)
     private String registerNumber;
-
     private String department;
-
     private Double cgpa;
-
     private Integer graduationYear;
-
     private Integer activeBacklogs;
-
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+    @ElementCollection
+    @CollectionTable(
+        name = "student_skills",
+        joinColumns = @JoinColumn(name = "student_profile_id")
+    )
+    @Column(name = "skill")
+    private Set<String> skills = new HashSet<>();
+    public Set<String> getSkills() {
+        return skills;
+    }
 
+    public void setSkills(Set<String> skills) {
+        this.skills = skills;
+    }
     public Long getId() {
         return id;
     }

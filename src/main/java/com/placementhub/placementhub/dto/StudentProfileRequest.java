@@ -1,4 +1,5 @@
 package com.placementhub.placementhub.dto;
+import java.util.Set;
 public class StudentProfileRequest {
     private String fullName;
     private String registerNumber;
@@ -6,7 +7,7 @@ public class StudentProfileRequest {
     private Double cgpa;
     private Integer graduationYear;
     private Integer activeBacklogs;
-
+    private Set<String> skills;
     public String getFullName() {
         return fullName;
     }
@@ -53,5 +54,12 @@ public class StudentProfileRequest {
 
     public void setActiveBacklogs(Integer activeBacklogs) {
         this.activeBacklogs = activeBacklogs;
+    }
+    public Set<String> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(Set<String> skills) {
+        this.skills = skills;
     }
 }

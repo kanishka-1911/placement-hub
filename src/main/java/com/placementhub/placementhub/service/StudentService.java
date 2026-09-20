@@ -7,7 +7,7 @@ import com.placementhub.placementhub.entity.User;
 import com.placementhub.placementhub.repository.StudentProfileRepository;
 import com.placementhub.placementhub.repository.UserRepository;
 import org.springframework.stereotype.Service;
-
+import java.util.Objects;
 @Service
 public class StudentService {
 
@@ -55,7 +55,7 @@ public class StudentService {
         profile.setCgpa(request.getCgpa());
         profile.setGraduationYear(request.getGraduationYear());
         profile.setActiveBacklogs(request.getActiveBacklogs());
-
+        profile.setSkills(request.getSkills());
         profile.setUser(user);
 
         StudentProfile saved =
@@ -93,15 +93,15 @@ public class StudentService {
                                 new RuntimeException(
                                         "Student profile not found"));
 
-        if (!profile.getRegisterNumber()
-                .equals(request.getRegisterNumber())) {
+        if (!Objects.equals(
+                profile.getRegisterNumber(),
+                request.getRegisterNumber())) {
 
-            if (studentProfileRepository
-                    .existsByRegisterNumber(
+            if (request.getRegisterNumber() != null &&
+                    studentProfileRepository.existsByRegisterNumber(
                             request.getRegisterNumber())) {
 
-                throw new RuntimeException(
-                        "Register number already exists");
+                throw new RuntimeException("Register number already exists");
             }
         }
 
@@ -111,7 +111,7 @@ public class StudentService {
         profile.setCgpa(request.getCgpa());
         profile.setGraduationYear(request.getGraduationYear());
         profile.setActiveBacklogs(request.getActiveBacklogs());
-
+        profile.setSkills(request.getSkills());
         StudentProfile updated =
                 studentProfileRepository.save(profile);
 
@@ -129,7 +129,8 @@ public class StudentService {
                 profile.getDepartment(),
                 profile.getCgpa(),
                 profile.getGraduationYear(),
-                profile.getActiveBacklogs()
+                profile.getActiveBacklogs(),
+                profile.getSkills()
         );
     }
 }

@@ -1,5 +1,5 @@
 package com.placementhub.placementhub.dto;
-
+import java.util.Set;
 public class StudentProfileResponse {
 
     private Long id;
@@ -10,7 +10,7 @@ public class StudentProfileResponse {
     private Double cgpa;
     private Integer graduationYear;
     private Integer activeBacklogs;
-
+    private Set<String> skills;
     public StudentProfileResponse(
             Long id,
             String email,
@@ -19,7 +19,8 @@ public class StudentProfileResponse {
             String department,
             Double cgpa,
             Integer graduationYear,
-            Integer activeBacklogs) {
+            Integer activeBacklogs,
+            Set<String> skills) {
 
         this.id = id;
         this.email = email;
@@ -29,6 +30,7 @@ public class StudentProfileResponse {
         this.cgpa = cgpa;
         this.graduationYear = graduationYear;
         this.activeBacklogs = activeBacklogs;
+        this.skills = skills;
     }
 
     public Long getId() {
@@ -61,5 +63,12 @@ public class StudentProfileResponse {
 
     public Integer getActiveBacklogs() {
         return activeBacklogs;
+    }
+    public Set<String> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(Set<String> skills) {
+        this.skills = skills;
     }
 }
