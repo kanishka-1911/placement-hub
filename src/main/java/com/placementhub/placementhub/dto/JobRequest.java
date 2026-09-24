@@ -1,5 +1,5 @@
 package com.placementhub.placementhub.dto;
-
+import java.util.Set;
 import java.time.LocalDate;
 public class JobRequest {
     private String title;
@@ -8,6 +8,9 @@ public class JobRequest {
     private Integer maximumBacklogs;
     private LocalDate applicationDeadline;
     private Long companyId;
+    private Integer eligibleGraduationYear;
+    private Set<String> requiredSkills;
+    private Set<String> allowedDepartments;
 
     public String getTitle() {
         return title;
@@ -54,5 +57,28 @@ public class JobRequest {
 
     public void setCompanyId(Long companyId) {
         this.companyId = companyId;
+    }
+    public Integer getEligibleGraduationYear() {
+        return eligibleGraduationYear;
+    }
+
+    public void setEligibleGraduationYear(Integer eligibleGraduationYear) {
+        this.eligibleGraduationYear = eligibleGraduationYear;
+    }
+
+    public Set<String> getRequiredSkills() {
+        return requiredSkills;
+    }
+
+    public void setRequiredSkills(Set<String> requiredSkills) {
+        this.requiredSkills = requiredSkills;
+    }
+
+    public Set<String> getAllowedDepartments() {
+        return allowedDepartments;
+    }
+
+    public void setAllowedDepartments(Set<String> allowedDepartments) {
+        this.allowedDepartments = allowedDepartments;
     }
 }

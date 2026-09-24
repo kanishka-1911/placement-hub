@@ -40,6 +40,9 @@ public class JobService {
                 request.getApplicationDeadline()
         );
         job.setCompany(company);
+        job.setEligibleGraduationYear(request.getEligibleGraduationYear());
+        job.setRequiredSkills(request.getRequiredSkills());
+        job.setAllowedDepartments(request.getAllowedDepartments());
 
         return jobRepository.save(job);
     }
