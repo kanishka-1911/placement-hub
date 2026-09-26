@@ -1,6 +1,7 @@
 package com.placementhub.placementhub.service;
 
 import com.placementhub.placementhub.dto.EligibilityResponse;
+import com.placementhub.placementhub.dto.JobEligibilityResponse;
 import com.placementhub.placementhub.entity.Job;
 import com.placementhub.placementhub.entity.StudentProfile;
 import com.placementhub.placementhub.entity.User;
@@ -146,5 +147,126 @@ public class EligibilityService {
                 eligible,
                 reasons
         );
+    }
+    public List<JobEligibilityResponse> getAllJobEligibility(
+            String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
+
+        StudentProfile student = studentProfileRepository
+                .findByUser(user)
+                .orElseThrow(() ->
+                        new RuntimeException("Student profile not found"));
+
+        List<Job> jobs = jobRepository.findAll();
+
+        List<JobEligibilityResponse> results = new ArrayList<>();
+
+        for (Job job : jobs) {
+
+            List<String> reasons = new ArrayList<>();
+
+            // CGPA
+            if (student.getCgpa() == null ||
+                    student.getCgpa() < job.getMinimumCgpa()) {
+
+                reasons.add(
+                        "Minimum CGPA required: " +
+                        job.getMinimumCgpa() +
+                        " → You have " +
+                        student.getCgpa()
+                );
+            }
+
+            // Backlogs
+            if (student.getActiveBacklogs() == null ||
+                    student.getActiveBacklogs() >
+                            job.getMaximumBacklogs()) {
+
+                reasons.add(
+                        "Maximum backlogs allowed: " +
+                        job.getMaximumBacklogs() +
+                        " → You have " +
+                        student.getActiveBacklogs()
+                );
+            }
+
+            // Graduation year
+            if (student.getGraduationYear() == null ||
+                    !student.getGraduationYear()
+                            .equals(job.getEligibleGraduationYear())) {
+
+                reasons.add(
+                        "Graduation year required: " +
+                        job.getEligibleGraduationYear() +
+                        " → You graduate in " +
+                        student.getGraduationYear()
+                );
+            }
+
+            // Department
+            boolean departmentEligible =
+                    job.getAllowedDepartments() != null &&
+                    job.getAllowedDepartments()
+                            .stream()
+                            .anyMatch(department ->
+                                    department.equalsIgnoreCase(
+                                            student.getDepartment()));
+
+            if (!departmentEligible) {
+
+                reasons.add(
+                        "Department not eligible: " +
+                        student.getDepartment()
+                );
+            }
+
+            // Skills
+            Set<String> studentSkills =
+                    student.getSkills() == null
+                            ? Set.of()
+                            : student.getSkills();
+
+            Set<String> normalizedStudentSkills =
+                    studentSkills.stream()
+                            .map(String::toLowerCase)
+                            .collect(Collectors.toSet());
+
+            Set<String> requiredSkills =
+                    job.getRequiredSkills() == null
+                            ? Set.of()
+                            : job.getRequiredSkills();
+
+            List<String> missingSkills =
+                    requiredSkills.stream()
+                            .filter(skill ->
+                                    !normalizedStudentSkills.contains(
+                                            skill.toLowerCase()))
+                            .collect(Collectors.toList());
+
+            if (!missingSkills.isEmpty()) {
+
+                reasons.add(
+                        "Missing required skills: " +
+                        String.join(", ", missingSkills)
+                );
+            }
+
+            boolean eligible = reasons.isEmpty();
+
+            results.add(
+                    new JobEligibilityResponse(
+                            job.getId(),
+                            job.getTitle(),
+                            job.getCompany().getName(),
+                            eligible,
+                            reasons
+                    )
+            );
+        }
+
+        return results;
     }
 }

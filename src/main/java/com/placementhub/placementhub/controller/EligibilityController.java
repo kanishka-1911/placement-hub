@@ -1,8 +1,9 @@
 package com.placementhub.placementhub.controller;
 
 import com.placementhub.placementhub.dto.EligibilityResponse;
+import com.placementhub.placementhub.dto.JobEligibilityResponse;
 import com.placementhub.placementhub.service.EligibilityService;
-
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,17 @@ public class EligibilityController {
                 eligibilityService.checkEligibility(
                         authentication.getName(),
                         jobId);
+
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/jobs/eligible")
+    public ResponseEntity<List<JobEligibilityResponse>>
+            getAllJobEligibility(
+                    Authentication authentication) {
+
+        List<JobEligibilityResponse> response =
+                eligibilityService.getAllJobEligibility(
+                        authentication.getName());
 
         return ResponseEntity.ok(response);
     }
