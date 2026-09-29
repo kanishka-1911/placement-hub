@@ -16,4 +16,5 @@ public interface ApplicationRepository
     );
 
     List<Application> findByStudent(StudentProfile student);
+    List<Application> findByJobId(Long jobId);
 }

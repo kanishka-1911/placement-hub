@@ -1,6 +1,7 @@
 package com.placementhub.placementhub.service;
 
 import com.placementhub.placementhub.dto.ApplicationResponse;
+
 import com.placementhub.placementhub.entity.Application;
 import com.placementhub.placementhub.entity.Job;
 import com.placementhub.placementhub.entity.StudentProfile;
@@ -15,7 +16,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
+import com.placementhub.placementhub.dto.AdminApplicationResponse;
+import java.util.ArrayList;
 @Service
 public class ApplicationService {
 
@@ -142,5 +144,64 @@ public class ApplicationService {
                 application.getAppliedAt(),
                 application.getStatus()
         );
+    }
+    public List<AdminApplicationResponse> getApplicationsForJob(
+            Long jobId) {
+
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() ->
+                        new RuntimeException("Job not found"));
+
+        return applicationRepository
+                .findByJobId(jobId)
+                .stream()
+                .map(this::convertToAdminResponse)
+                .toList();
+    }
+    private AdminApplicationResponse convertToAdminResponse(
+            Application application) {
+
+        StudentProfile student =
+                application.getStudent();
+
+        return new AdminApplicationResponse(
+                application.getId(),
+                application.getJob().getId(),
+                application.getJob().getTitle(),
+                student.getId(),
+                student.getFullName(),
+                student.getRegisterNumber(),
+                student.getDepartment(),
+                student.getCgpa(),
+                student.getUser().getEmail(),
+                application.getAppliedAt(),
+                application.getStatus()
+        );
+    }
+    public AdminApplicationResponse updateApplicationStatus(
+            Long applicationId,
+            String status) {
+
+        Application application =
+                applicationRepository.findById(applicationId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Application not found"));
+
+        if (!status.equals("APPLIED") &&
+                !status.equals("SHORTLISTED") &&
+                !status.equals("SELECTED") &&
+                !status.equals("REJECTED")) {
+
+            throw new RuntimeException(
+                    "Invalid application status");
+        }
+
+        application.setStatus(status);
+
+        Application updated =
+                applicationRepository.save(application);
+
+        return convertToAdminResponse(updated);
     }
 }
